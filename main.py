@@ -4,6 +4,7 @@ from selenium import webdriver  # 从selenium导入webdriver
 import time
 from selenium.webdriver.chrome.options import Options
 import random
+import csv
 
 # import win32api
 # import win32con
@@ -38,8 +39,8 @@ toolSearchEnter = driver.find_element_by_id('search_enter')
 toolSearchEnter.click()
 
 with open(file_data_name, "w") as file:
-    file.writelines("标题\t链接")
-    file.write("\n")
+    f_csv = csv.DictWriter(file, ["title", 'URL'])
+    f_csv.writeheader()
 
 while True:
     pagebarContainer = driver.find_element_by_id('pagebar_container')
@@ -58,12 +59,10 @@ while True:
         print(driver.title)
         print(driver.current_url)
         with open(file_data_name, "a") as file:
-            file.write(driver.title)
-            file.write("\t")
-            file.write(driver.current_url)
-            file.write("\n")
+            f_csv = csv.writer(file)
+            f_csv.writerow([driver.title, driver.current_url])
 
-        time.sleep(random.randint(5, 10))
+        time.sleep(random.randint(5, 15))
 
         driver.close()
         driver.switch_to.window(handles[0])
