@@ -41,31 +41,33 @@ toolSearchEnter.click()
 with open(file_data_name, "w") as file:
     f_csv = csv.DictWriter(file, ["title", 'URL'])
     f_csv.writeheader()
+    f_csv = csv.writer(file)
+    file.seek(file.tell() - 2)
 
-while True:
-    pagebarContainer = driver.find_element_by_id('pagebar_container')
-    print(pagebarContainer)
-    pageNext = driver.find_element_by_id('sogou_next')
-    print(pageNext)
-    newsList = driver.find_element_by_class_name('news-list')
-    links = newsList.find_elements_by_tag_name('li')
-    for link in links:
-        txtBox = link.find_element_by_class_name('txt-box')
-        h3 = txtBox.find_element_by_tag_name('h3')
-        a = h3.find_element_by_tag_name('a')
-        a.click()
-        handles = driver.window_handles
-        driver.switch_to.window(handles[-1])
-        print(driver.title)
-        print(driver.current_url)
-        with open(file_data_name, "a") as file:
-            f_csv = csv.writer(file)
+    while True:
+        pagebarContainer = driver.find_element_by_id('pagebar_container')
+        #print(pagebarContainer)
+        pageNext = driver.find_element_by_id('sogou_next')
+        #print(pageNext)
+        newsList = driver.find_element_by_class_name('news-list')
+        links = newsList.find_elements_by_tag_name('li')
+        for link in links:
+            txtBox = link.find_element_by_class_name('txt-box')
+            h3 = txtBox.find_element_by_tag_name('h3')
+            a = h3.find_element_by_tag_name('a')
+            a.click()
+            handles = driver.window_handles
+            driver.switch_to.window(handles[-1])
+            print(driver.title)
+            print(driver.current_url)
+
             f_csv.writerow([driver.title, driver.current_url])
+            file.seek(file.tell() - 2)
 
-        time.sleep(random.randint(5, 15))
+            time.sleep(random.randint(10, 30))
 
-        driver.close()
-        driver.switch_to.window(handles[0])
-    if pageNext is None:
-        break
-    pageNext.click()
+            driver.close()
+            driver.switch_to.window(handles[0])
+        if pageNext is None:
+            break
+        pageNext.click()
